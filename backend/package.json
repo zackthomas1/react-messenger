@@ -1,0 +1,9 @@
+{
+    "name": "react-messenger-backend",
+    "version": "0.0.1",
+    "description": "A messaging application built using react",
+    "dependencies": {
+        "express": "^4.18.2",
+        "socket.io": "^4.7.1"
+    }
+}
