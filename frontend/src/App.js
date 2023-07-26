@@ -31,24 +31,18 @@ const App = (props) => {
       setIsConnected(false);
     }
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-    };
-  }, []);
-
-  useEffect(() => {
     function onSendMessage(msg) {
       console.log("Client recieved from server: ", msg);
       setMessages((prevMessages) => [...prevMessages, { user: "", text: msg }]);
     }
 
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
     socket.on("send_message", onSendMessage);
 
     return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
       socket.off("send_message", onSendMessage);
     };
   }, []);
