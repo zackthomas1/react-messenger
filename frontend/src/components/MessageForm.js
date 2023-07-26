@@ -1,27 +1,44 @@
 import React, { useState } from "react";
+import { socket } from "../socket";
 
 const MessageForm = (props) => {
   // React States
-  const [currentInput, setCurrentInput] = useState("");
+  const [msgInput, setMsgInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // Handlers
-  const inputChangeHandler = (event) => {
-    setCurrentInput(event.target.value)
-    console.log(event.target.value)
+  const msgChangeHandler = (event) => {
+    setMsgInput(event.target.value);
   };
 
   const sendMessageHandler = (event) => {
     event.preventDefault();
 
-    console.log(currentInput);
-    setCurrentInput("")
+    //
+    props.onUpdateLocalMessages(msgInput);
+    socket.emit("send_message", msgInput, (err) => {
+      if (err) {
+        console.log("MessageForm: ", err);
+      }
+    });
+    console.log("Client sent: ", msgInput);
+
+    //
+    setMsgInput("");
   };
 
   return (
     <form onSubmit={sendMessageHandler}>
       <label htmlFor="messageInput">message: </label>
-      <input type="text" id="messageInput" onChange={inputChangeHandler} value={currentInput}/>
-      <button type="submit">Send</button>
+      <input
+        type="text"
+        id="messageInput"
+        onChange={msgChangeHandler}
+        value={msgInput}
+      />
+      <button type="submit" disabled={isLoading}>
+        Send
+      </button>
     </form>
   );
 };
