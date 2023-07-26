@@ -1,13 +1,14 @@
 import React from "react";
-
+import MessageElement from "./MessageElement";
+import NotificationElement from "./NotificationElement";
 const MessagesList = (props) => {
   return (
     <ul>
-      {props.messages.map((message) => {
-        return (
-          <li>
-            <span>{message.text}-{message.user}</span>
-          </li>
+      {props.messages.map((msg) => {
+        return msg.type === "notification" ? (
+          <NotificationElement text={msg.text} />
+        ) : (
+          <MessageElement text={msg.text} user={msg.user} />
         );
       })}
     </ul>

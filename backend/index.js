@@ -23,16 +23,34 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  {
+    console.log("a user connected");
+    // ToDo: pass the connected username
+    const username = "(ToDo: Replace with username)";
+    socket.broadcast.emit("send_message", {
+      user: username,
+      text: `${username} has connected from chat`,
+      type: "notification",
+    });
+  }
 
   socket.on("disconnect", () => {
     console.log("a user disconnected");
+    // ToDo: pass the disconnected username
+    const username = "(ToDo: Replace with username)";
+    socket.broadcast.emit("send_message", {
+      user: username,
+      text: `${username} has disconnected from chat`,
+      type: "notification",
+    });
   });
 
-  socket.on("send_message", (msg) => {
-    console.log("Server recieved from client: ", msg);
-    socket.broadcast.emit("send_message", msg);
+  socket.on("send_message", (msgObj) => {
+    console.log("Server recieved from client: ", msgObj.text);
+    socket.broadcast.emit("send_message", msgObj);
   });
+
+
 });
 
 server.listen(3000, () => {

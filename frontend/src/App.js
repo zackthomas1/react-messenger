@@ -4,15 +4,18 @@ import { socket } from "./socket";
 import MessageForm from "./components/MessageForm";
 import MessagesList from "./components/MessagesList";
 import ConnectionState from "./components/ConnectionState";
+import ConnectionManger from "./components/ConnectionManger";
 
 const DUMMY_MESSAGES = [
   {
-    user: "johnnyBOI_69",
-    text: "Hello",
+    user: 'johnnyBOI_69',
+    text: 'Hello',
+    type: 'message'
   },
   {
-    user: "zakthomas1",
-    text: "world",
+    user: 'zakthomas1',
+    text: 'world',
+    type: 'message'
   },
 ];
 
@@ -31,9 +34,9 @@ const App = (props) => {
       setIsConnected(false);
     }
 
-    function onSendMessage(msg) {
-      console.log("Client recieved from server: ", msg);
-      setMessages((prevMessages) => [...prevMessages, { user: "", text: msg }]);
+    function onSendMessage(msgObj) {
+      console.log("Client recieved from server: ", msgObj);
+      setMessages((prevMsgObjs) => [...prevMsgObjs, msgObj]);
     }
 
     socket.on("connect", onConnect);
@@ -48,15 +51,19 @@ const App = (props) => {
   }, []);
 
   //handlers
-  const updateLocalMessagesHandler = (msg) => {
-    setMessages((prevMessages) => [...prevMessages, { user: "", text: msg }]);
+  const updateLocalMessagesHandler = (msgObj) => {
+    setMessages((prevMsgObjs) => [...prevMsgObjs, msgObj]);
   };
 
   return (
     <div className="App">
       <ConnectionState isConnected={isConnected} />
       <MessagesList messages={messages} />
-      <MessageForm onUpdateLocalMessages={updateLocalMessagesHandler} />
+      <MessageForm
+        isConnected={isConnected}
+        onUpdateLocalMessages={updateLocalMessagesHandler}
+      />
+      <ConnectionManger isConnected={isConnected} />
     </div>
   );
 };

@@ -3,28 +3,29 @@ import { socket } from "../socket";
 
 const MessageForm = (props) => {
   // React States
-  const [msgInput, setMsgInput] = useState("");
+  const [msgText, setMsgText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Handlers
   const msgChangeHandler = (event) => {
-    setMsgInput(event.target.value);
+    setMsgText(event.target.value);
   };
 
   const sendMessageHandler = (event) => {
     event.preventDefault();
 
     //
-    props.onUpdateLocalMessages(msgInput);
-    socket.emit("send_message", msgInput, (err) => {
-      if (err) {
-        console.log("MessageForm: ", err);
-      }
-    });
-    console.log("Client sent: ", msgInput);
+    const msgObj = {
+      user: "Todo: get username",
+      text: msgText,
+      type: "msg",
+    };
+    props.onUpdateLocalMessages(msgObj);
+    socket.emit("send_message", msgObj, (err) => {});
+    console.log("Client sent: ", msgObj.text);
 
     //
-    setMsgInput("");
+    setMsgText("");
   };
 
   return (
@@ -34,9 +35,9 @@ const MessageForm = (props) => {
         type="text"
         id="messageInput"
         onChange={msgChangeHandler}
-        value={msgInput}
+        value={msgText}
       />
-      <button type="submit" disabled={isLoading}>
+      <button type="submit" disabled={isLoading || !props.isConnected}>
         Send
       </button>
     </form>
